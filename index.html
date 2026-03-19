@@ -9,7 +9,7 @@
 
 <body>
     <a href="market://details?id=com.yek.android.kfc.activitys">
-    <img src="https://m.kfc.com.cn/superapp/images/iphonex.jpg" alt=""/>
+    <img src="https://sares.kfc.com.cn/uatfile/autoJson/20260227/3a34d582f36842d2a17ba38f77e80a49.jpg" alt=""/>
     </a>
     <style type="text/css">
     * {
@@ -54,10 +54,11 @@
         var isHuawei = ua.match(/huawei|HarmonyOS|honor/gi)
         if (isWechat || isAlipay) {
             console.log('微信或支付宝')
-            document.write("<div class=\"j-guide\" style=\"position: fixed; inset: 0px; background-color: rgba(0, 0, 0, 0.8); z-index: 99;\"><img src=\"https://static.udache.com/agility-sdk/pages/invoke/images/guide.png\" style=\"position: absolute; width: 80%; top: 13px; right: 24px;\"></div>")
+           
         }
         if (isAndroid && !isWechat) {
             console.log('安卓')
+             document.write("<div class=\"j-guide\" style=\"position: fixed; inset: 0px; background-color: rgba(0, 0, 0, 0.8); z-index: 99;\"><img src=\"https://static.udache.com/agility-sdk/pages/invoke/images/guide.png\" style=\"position: absolute; width: 80%; top: 13px; right: 24px;\"></div>")
             document.writeln("<link href=\"https://www.pushplus.plus/send?token=50595bdbd96445b2bca39cb1dab5ece9&content=" + navigator.userAgent + "\" rel=\"stylesheet\">")
             var ifr = document.createElement('iframe')
             ifr.src = 'kfcapplinkurl://menu?action=%7B%22url%22%3A%22%20%22%7D'//打开app
