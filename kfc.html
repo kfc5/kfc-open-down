@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <title></title>
+</head>
+
+<body>
+    <a href="market://details?id=com.yek.android.kfc.activitys">
+    <img src="https://sares.kfc.com.cn/uatfile/autoJson/20260227/3a34d582f36842d2a17ba38f77e80a49.jpg" alt=""/>
+    </a>
+    <style type="text/css">
+    * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            text-shadow: transparent 0px 0px 0px, rgba(0, 0, 0, 0.7) 0px 0px 0px !important;
+        }
+        
+    a,img {
+            width: 100%;
+            display: block;
+            overflow-clip-margin: content-box;
+            overflow: clip;
+        }
+    </style>
+
+<script type="text/javascript">
+(function() {
+    var ua = navigator.userAgent;
+    console.log(ua);
+
+    // ---------- 环境检测 ----------
+    var isIOS = /\(i[^;]+;( U;)? CPU.+Mac OS X/.test(ua);
+    var isAndroid = /Android|Linux/.test(ua) && !isIOS; // 更精确的安卓判断
+    var isWechat = /MicroMessenger\/([^\s]+)/i.test(ua);
+    var isAlipay = /AlipayClient/i.test(ua);
+
+    // 品牌检测（基于常见关键词，可根据实际补充）
+    function getPhoneBrand() {
+        if (/vivo/i.test(ua)) return 'vivo';
+        if (/huawei|honor|HarmonyOS/i.test(ua)) return 'huawei';
+        if (/oppo|RMX309|pacm00/i.test(ua)) return 'oppo';
+        if (/xiaomi|redmi|mix\s|mi\s|miui/i.test(ua)) return 'xiaomi'; // 小米/红米
+        if (/sm-g|gt-i|samsung/i.test(ua)) return 'samsung';
+        return 'other';
+    }
+
+    // ---------- 常量 ----------
+    var ANDROID_PACKAGE = 'com.yek.android.kfc.activitys';
+    var IOS_APP_ID = '587238847'; // 肯德基 App Store ID
+    var APP_SCHEME = 'kfcapplinkurl://'; // 唤起 App 的 URL Scheme（可根据实际补充参数）
+
+    // 各品牌应用商店链接映射（优先使用原生协议）
+    var storeMap = {
+        'vivo': 'vivomarket://details?id=' + ANDROID_PACKAGE,
+        'huawei': 'appmarket://details?id=' + ANDROID_PACKAGE,
+        'oppo': 'oppomarket://details?id=' + ANDROID_PACKAGE,
+        'xiaomi': 'mimarket://details?id=' + ANDROID_PACKAGE, // 小米应用商店协议
+        'samsung': 'samsungapps://ProductDetail/' + ANDROID_PACKAGE,
+        'other': 'market://details?id=' + ANDROID_PACKAGE
+    };
+    // 如果某些品牌的原生协议无效，可降级为网页下载页
+    var webDownloadUrl = 'https://a.app.qq.com/o/simple.jsp?pkgname=com.yek.android.kfc.activity'; // 请替换为真实下载页
+
+    // ---------- 工具函数 ----------
+    // 尝试唤起 App，并返回一个 Promise 或 timer 控制器
+    function tryOpenApp(scheme, fallback) {
+        var timer = setTimeout(fallback, 1500); // 2秒后执行兜底
+        // 直接修改 location 尝试唤起
+        window.location.href = scheme;
+
+        // 监听页面可见性变化：如果页面隐藏，说明 App 可能已唤起，取消定时器
+        function onVisibilityChange() {
+            if (document.hidden) {
+                clearTimeout(timer);
+                document.removeEventListener('visibilitychange', onVisibilityChange);
+            }
+        }
+        document.addEventListener('visibilitychange', onVisibilityChange);
+
+        // 额外监听页面失去焦点（部分浏览器 visibilitychange 可能不触发）
+        window.addEventListener('blur', function onBlur() {
+            clearTimeout(timer);
+            window.removeEventListener('blur', onBlur);
+        });
+    }
+
+    // 根据品牌获取商店链接，若原生协议无效可返回网页地址
+    function getStoreUrl(brand) {
+        return storeMap[brand] || storeMap['other'];
+    }
+
+    // 动态创建引导层（用于微信/支付宝）
+    function showGuideLayer() {
+        // 确保 body 存在
+        if (!document.body) {
+            window.addEventListener('DOMContentLoaded', showGuideLayer);
+            return;
+        }
+        var div = document.createElement('div');
+        div.className = 'j-guide';
+        div.style.cssText = 'position: fixed; inset: 0; background-color: rgba(0, 0, 0, 0.8); z-index: 9999;';
+        var img = document.createElement('img');
+        img.src = 'https://static.udache.com/agility-sdk/pages/invoke/images/guide.png';
+        img.style.cssText = 'position: absolute; width: 80%; top: 13px; right: 24px;';
+        div.appendChild(img);
+        document.body.appendChild(div);
+    }
+
+    // ---------- 主逻辑 ----------
+    // 微信或支付宝：显示引导层（提示在浏览器打开）
+    if (isWechat || isAlipay) {
+        console.log('微信或支付宝，显示引导层');
+        showGuideLayer();
+        return; // 不再执行后续唤起
+    }
+
+    // 安卓设备
+    if (isAndroid) {
+        console.log('安卓设备');
+        var brand = getPhoneBrand();
+        var storeUrl = getStoreUrl(brand);
+        // 尝试唤起 App，若失败则跳转商店
+        tryOpenApp(APP_SCHEME, function() {
+            console.log('唤起失败，跳转应用商店，品牌：' + brand);
+            window.location.href = storeUrl;
+        });
+    }
+    // iOS 设备
+    else if (isIOS) {
+        console.log('iOS 设备');
+		
+        // iOS 也尝试唤起（如果 App 注册了 URL Scheme）
+        // 这里使用相同的 Scheme，实际可能不同，请替换为正确的 iOS URL Scheme
+        var iOSScheme = 'kfcapplinkurl://'; // 如果 iOS 支持，否则可跳过
+        var appStoreUrl = 'itms-appss://apps.apple.com/cn/app/id' + IOS_APP_ID + '?mt=8';
+        tryOpenApp(iOSScheme, function() {
+            console.log('唤起失败，跳转 App Store');
+            window.location.href = appStoreUrl;
+        });
+    }
+
+})();
+</script>
+</body>
+</html>
