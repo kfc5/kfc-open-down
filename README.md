@@ -2,5 +2,5 @@
   以达到快速下载App/App点餐率的提升。行销必备。
 <br/>演示二维码</h3>
 <br/>
-<img width="150" height="150" src="https://0.mm17177.workers.dev/" />
+演示：https://0.mm17177.workers.dev/
 </center>
