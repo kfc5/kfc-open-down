@@ -1,28 +1,27 @@
-name: DeepSeek UA识别
+name: 部署时注入API Key
 
 on:
   push:
-    branches: [ main, master ]
-  workflow_dispatch:  # 允许手动触发
+    branches: [ main ]
 
 jobs:
-  recognize:
+  deploy:
     runs-on: ubuntu-latest
-    
     steps:
       - name: 检出代码
         uses: actions/checkout@v4
       
-      - name: 调用DeepSeek API
+      - name: 注入 API Key 到 JS 文件
         env:
           DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
         run: |
-          curl -X POST https://api.deepseek.com/v1/chat/completions \
-            -H "Content-Type: application/json" \
-            -H "Authorization: Bearer $DEEPSEEK_API_KEY" \
-            -d '{
-              "model": "deepseek-chat",
-              "messages": [{"role": "user", "content": "分析User-Agent，只返回品牌英文小写：Mozilla/5.0 (Linux; Android 15; 24122RKC7C)"}],
-              "temperature": 0,
-              "max_tokens": 8
-            }'
+          # 创建一个配置文件，把 Secret 写入
+          echo "window.DEEPSEEK_API_KEY = '$DEEPSEEK_API_KEY';" > config.js
+          # 或者直接替换 HTML 中的占位符
+          sed -i "s/{{DEEPSEEK_API_KEY}}/$DEEPSEEK_API_KEY/g" index.html
+      
+      - name: 部署到 GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: .
