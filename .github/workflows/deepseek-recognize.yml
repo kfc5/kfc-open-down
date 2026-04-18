@@ -1,0 +1,28 @@
+name: DeepSeek UA识别
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:  # 允许手动触发
+
+jobs:
+  recognize:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+      
+      - name: 调用DeepSeek API
+        env:
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+        run: |
+          curl -X POST https://api.deepseek.com/v1/chat/completions \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer $DEEPSEEK_API_KEY" \
+            -d '{
+              "model": "deepseek-chat",
+              "messages": [{"role": "user", "content": "分析User-Agent，只返回品牌英文小写：Mozilla/5.0 (Linux; Android 15; 24122RKC7C)"}],
+              "temperature": 0,
+              "max_tokens": 8
+            }'
