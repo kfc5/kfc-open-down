@@ -162,7 +162,7 @@ async function recognizeByDeepSeek(ua) {
     // ✅ 改成调用你自己的 Vercel 函数
     
     try {
-        const response = await fetch('/api/deepseek', {  // 调用你自己的函数
+        const response = await fetch('https://aiui-bay.vercel.app/api/deepseek', {  // 调用你自己的函数
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
