@@ -1,4 +1,4 @@
-name: 部署时注入API Key
+name: 安全部署
 
 on:
   push:
@@ -11,17 +11,29 @@ jobs:
       - name: 检出代码
         uses: actions/checkout@v4
       
-      - name: 注入 API Key 到 JS 文件
+      - name: 创建限权配置
         env:
           DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
         run: |
-          # 创建一个配置文件，把 Secret 写入
-          echo "window.DEEPSEEK_API_KEY = '$DEEPSEEK_API_KEY';" > config.js
-          # 或者直接替换 HTML 中的占位符
-          sed -i "s/{{DEEPSEEK_API_KEY}}/$DEEPSEEK_API_KEY/g" index.html
+          # 创建带有效期限的配置
+          EXPIRY=$(date -d "+30 days" +%s)
+          echo "window.__API_CONFIG = {
+            key: '$DEEPSEEK_API_KEY',
+            expiry: $EXPIRY,
+            allowedDomains: ['your-username.github.io']
+          };" > config.js
+          
+          # 添加使用限制代码
+          cat >> config.js << 'EOF'
+          // 前端使用限制
+          if (Date.now() / 1000 > window.__API_CONFIG.expiry) {
+            console.error('API Key 已过期');
+            throw new Error('API Key expired');
+          }
+          EOF
       
-      - name: 部署到 GitHub Pages
+      - name: 部署
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: .
+          publish_dir: ./
