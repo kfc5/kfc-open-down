@@ -305,8 +305,6 @@ async function getPhoneBrand(ua = navigator.userAgent) {
 
     // 修改：添加 brand 参数
     function attemptAndroidOpen(brand) {
-        console.log('安卓设备尝试跳转，品牌:', brand);
-        
         tryOpenApp(APP_SCHEME, function() {
             console.log('直接唤起App失败，尝试应用商店');
             
@@ -431,7 +429,5 @@ if (isIOS && (isWechat || isAlipay)) {
 
 })();
 </script>
-<script charset="UTF-8" id="LA_COLLECT" src="//sdk.51.la/js-sdk-pro.min.js"></script>
-<script>LA.init({id:"3Pci1dkZEUriCPrO",ck:"3Pci1dkZEUriCPrO",autoTrack:true})</script>
 </body>
 </html>
