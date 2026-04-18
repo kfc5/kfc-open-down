@@ -115,38 +115,47 @@ function getPhoneBrand(ua = navigator.userAgent) {
     const parser = new UAParser(ua);
     const result = parser.getResult();
     
-    // 品牌映射表
+    // 品牌映射表（增加更多别名）
     const brandMap = {
-        'Apple': 'apple',
-        'Samsung': 'samsung',
-        'Huawei': 'huawei',
-        'Xiaomi': 'xiaomi',
-        'OPPO': 'oppo',
+        'apple': 'apple',
+        'samsung': 'samsung',
+        'huawei': 'huawei',
+        'honor': 'honor',
+        'xiaomi': 'xiaomi',
+        'redmi': 'xiaomi',     // 红米归为小米
+        'poco': 'xiaomi',      // POCO归为小米
+        'oppo': 'oppo',
+        'realme': 'realme',
         'vivo': 'vivo',
-        'Realme': 'realme',
-        'OnePlus': 'oneplus',
-        'Meizu': 'meizu',
-        'Honor': 'honor'
+        'oneplus': 'oneplus',
+        'meizu': 'meizu'
     };
     
-    // 从设备中获取品牌
-    if (result.device.vendor && brandMap[result.device.vendor]) {
-        console.log('从设备中获取品牌:', brandMap[result.device.vendor]);
-		return brandMap[result.device.vendor];
-		
+    // 获取并规范化 vendor
+    let vendor = result.device.vendor;
+    
+if (vendor) {
+    // 转小写
+    vendor = vendor.toLowerCase();
+    
+    // 1. 先精确匹配（最快，最准确）
+    if (brandMap[vendor]) {
+        console.log('从设备中获取品牌（精确匹配）:', brandMap[vendor]);
+        return brandMap[vendor];
     }
     
-    // 从浏览器引擎中推断（某些设备会在引擎中暴露品牌）
-    if (result.engine.vendor && brandMap[result.engine.vendor]) {
-        console.log('从浏览器引擎中检测到品牌:', brandMap[result.device.vendor]);
-		return brandMap[result.engine.vendor];
-		
+    // 2. 再模糊匹配（处理 "Xiaomi Communications" 等情况）
+    for (const key in brandMap) {
+        if (vendor.includes(key)) {
+            console.log('从设备中获取品牌（模糊匹配）:', brandMap[key]);
+            return brandMap[key];
+        }
     }
+}
     
-    // 如果都没有，回退到UA检测
-	console.log('自己判断品牌:', fallbackBrandDetection(ua));
+    // 回退到UA检测
+    console.log('自己判断品牌:', fallbackBrandDetection(ua));
     return fallbackBrandDetection(ua);
-	
 }
 
 function fallbackBrandDetection(ua) {
