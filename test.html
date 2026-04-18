@@ -157,33 +157,27 @@ async function getPhoneBrand(ua = navigator.userAgent) {
     console.log('UAParser未识别，调用DeepSeek...');
     return await recognizeByDeepSeek(ua);
 }
-const apiKey = window.DEEPSEEK_API_KEY;
-// DeepSeek识别函数（非流式）
 async function recognizeByDeepSeek(ua) {
-    const apiKey = localStorage.getItem('deepseek_key');
-    if (!apiKey) {
-        console.error('请配置DeepSeek API Key');
-        return 'unknown';
-    }
+    // ❌ 删掉原来的 localStorage 读取
+    // ✅ 改成调用你自己的 Vercel 函数
     
     try {
-        const response = await fetch('/api/deepseek', {
+        const response = await fetch('/api/deepseek', {  // 调用你自己的函数
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({
-                model: 'deepseek-chat',
-                messages: [{ role: 'user', content: '分析User-Agent，只返回品牌英文小写：' + ua }],
-                temperature: 0,
-                max_tokens: 8
-            })
+            body: JSON.stringify({ userAgent: ua })  // 把 User-Agent 传给后端
         });
         
         const data = await response.json();
-        let brand = data.choices[0].message.content.trim().toLowerCase();
-        brand = brand.replace(/[^a-z]/g, '');
-        return brand || 'unknown';
+        
+        if (data.brand) {
+            return data.brand;
+        } else {
+            console.error('DeepSeek识别失败:', data.error);
+            return 'unknown';
+        }
     } catch(e) {
         console.error('DeepSeek识别失败:', e);
         return 'unknown';
