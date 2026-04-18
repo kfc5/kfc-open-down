@@ -84,8 +84,7 @@
 			margin-right: 5px;
 		}
     </style>
-<script charset="UTF-8" id="LA_COLLECT" src="//sdk.51.la/js-sdk-pro.min.js"></script>
-<script>LA.init({id:"3Pci1dkZEUriCPrO",ck:"3Pci1dkZEUriCPrO",autoTrack:true})</script>
+<script src="https://cdn.jsdelivr.net/npm/ua-parser-js@latest/dist/ua-parser.min.js"></script>
 </head>
 <body>
 
@@ -99,90 +98,90 @@
 			<img class="brand-icon" src="https://h5.dianping.com/favicon.ico" alt="大众点评">
         </a>
     </div>
-<script src="https://cdn.jsdelivr.net/npm/ua-parser-js@latest/dist/ua-parser.min.js"></script>
-<script src="config.js"></script>
 <script type="text/javascript">
 (function() {
-    var ua = navigator.userAgent;
-    console.log('UserAgent:', ua);
+var ua = navigator.userAgent;
+console.log('UserAgent:', ua);
 
-    var isIOS = /\(i[^;]+;( U;)? CPU.+Mac OS X/.test(ua);
-    var isAndroid = /Android|Linux/.test(ua) && !isIOS;
-    var isWechat = /MicroMessenger\/([^\s]+)/i.test(ua);
-    var isAlipay = /AlipayClient/i.test(ua);
+var isIOS = /\(i[^;]+;( U;)? CPU.+Mac OS X/.test(ua);
+var isAndroid = /Android|Linux/.test(ua) && !isIOS;
+var isWechat = /MicroMessenger\/([^\s]+)/i.test(ua);
+var isAlipay = /AlipayClient/i.test(ua);
 
-    async function getPhoneBrand(ua = navigator.userAgent) {
-        const parser = new UAParser(ua);
-        const result = parser.getResult();
+// 先定义 recognizeByDeepSeek 函数
+async function recognizeByDeepSeek(ua) {
+    try {
+        const response = await fetch('https://aiui-bay.vercel.app/api/deepseek', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ userAgent: ua })
+        });
         
-        const brandMap = {
-            'apple': 'apple',
-            'samsung': 'samsung',
-            'huawei': 'huawei',
-            'honor': 'honor',
-            'xiaomi': 'xiaomi',
-            'redmi': 'xiaomi',
-            'poco': 'xiaomi',
-            'oppo': 'oppo',
-            'realme': 'realme',
-            'vivo': 'vivo',
-            'oneplus': 'oneplus',
-            'meizu': 'meizu'
-        };
+        const data = await response.json();
         
-        let vendor = result.device.vendor;
-        
-        if (vendor) {
-            vendor = vendor.toLowerCase();
-            
-            if (brandMap[vendor]) {
-                console.log('从设备中获取品牌（精确匹配）:', brandMap[vendor]);
-                return brandMap[vendor];
-            }
-            
-            for (const key in brandMap) {
-                if (vendor.includes(key)) {
-                    console.log('从设备中获取品牌（模糊匹配）:', brandMap[key]);
-                    return brandMap[key];
-                }
-            }
-        }
-        
-        console.log('UAParser未识别，调用DeepSeek...');
-        return await recognizeByDeepSeek(ua);
-    }
-    
-    async function recognizeByDeepSeek(ua) {
-        try {
-            const response = await fetch('https://aiui-bay.vercel.app/api/deepseek', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ userAgent: ua })
-            });
-            
-            const data = await response.json();
-            console.log('从AI获取品牌（DeepSeek匹配）：', data.brand);
-            if (data.brand) {
-                return data.brand;
-				
-            } else {
-                console.error('DeepSeek识别失败:', data.error);
-                return 'unknown';
-            }
-        } catch(e) {
-            console.error('DeepSeek识别失败:', e);
+        if (data.brand) {
+            console.log('DeepSeek识别结果:', data.brand);
+            return data.brand;
+        } else {
+            console.error('DeepSeek识别失败:', data.error);
             return 'unknown';
         }
+    } catch(e) {
+        console.error('DeepSeek识别失败:', e);
+        return 'unknown';
     }
+}
 
-    function fallbackBrandDetection(ua) {
-        // ... 你的 fallback 逻辑保持不变 ...
-        const uaStr = ua.toLowerCase();
-        // ... 完整逻辑 ...
-        return 'other';
+// 再定义 getPhoneBrand 函数
+async function getPhoneBrand(ua = navigator.userAgent) {
+    const parser = new UAParser(ua);
+    const result = parser.getResult();
+    
+    const brandMap = {
+        'apple': 'apple',
+        'samsung': 'samsung',
+        'huawei': 'huawei',
+        'honor': 'honor',
+        'xiaomi': 'xiaomi',
+        'redmi': 'xiaomi',
+        'poco': 'xiaomi',
+        'oppo': 'oppo',
+        'realme': 'realme',
+        'vivo': 'vivo',
+        'oneplus': 'oneplus',
+        'meizu': 'meizu'
+    };
+    
+    let vendor = result.device.vendor;
+    
+    if (vendor) {
+        vendor = vendor.toLowerCase();
+        
+        if (brandMap[vendor]) {
+            console.log('从设备中获取品牌（精确匹配）:', brandMap[vendor]);
+            return brandMap[vendor];
+        }
+        
+        for (const key in brandMap) {
+            if (vendor.includes(key)) {
+                console.log('从设备中获取品牌（模糊匹配）:', brandMap[key]);
+                return brandMap[key];
+            }
+        }
     }
+    
+    // 如果在微信或支付宝中，不调用 DeepSeek，直接返回 unknown
+    if (isWechat || isAlipay) {
+        console.log('微信/支付宝环境，跳过DeepSeek调用，返回unknown');
+        return 'unknown';
+    }
+    
+    // 回退到 DeepSeek（仅限普通浏览器环境）
+    console.log('UAParser未识别，调用DeepSeek...');
+    return await recognizeByDeepSeek(ua);
+}
 
     // 常量
     var ANDROID_PACKAGE = 'com.yek.android.kfc.activitys';
@@ -398,14 +397,10 @@
         }
         
         // iOS微信/支付宝环境处理
-        if (isIOS && isWechat) {
-            window.location.replace(IOS_APP_STORE_URL);
-        } else if (isIOS && isAlipay) {
-            window.location.replace(IOS_APP_STORE_URL);
-            setTimeout(() => {
-                window.location.href = IOS_APP_STORE_URL;
-            }, 100);
-        }
+if (isIOS && (isWechat || isAlipay)) {
+    window.location.replace(IOS_APP_STORE_URL);
+    return; // 直接返回，不执行后续自动跳转
+}
         
         // iOS 自动跳转
         if (isIOS && !isWechat && !isAlipay) {
@@ -436,5 +431,7 @@
 
 })();
 </script>
+<script charset="UTF-8" id="LA_COLLECT" src="//sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"3Pci1dkZEUriCPrO",ck:"3Pci1dkZEUriCPrO",autoTrack:true})</script>
 </body>
 </html>
