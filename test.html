@@ -98,6 +98,7 @@
 			<img class="brand-icon" src="https://h5.dianping.com/favicon.ico" alt="大众点评">
         </a>
     </div>
+<script src="storeMap.js"></script>
 <script type="text/javascript">
 (function() {
 var ua = navigator.userAgent;
@@ -182,39 +183,6 @@ async function getPhoneBrand(ua = navigator.userAgent) {
     console.log('UAParser未识别，调用DeepSeek...');
     return await recognizeByDeepSeek(ua);
 }
-
-    // 常量
-    var ANDROID_PACKAGE = 'com.yek.android.kfc.activitys';
-    var IOS_APP_ID = '587238847';
-    var IOS_APP_STORE_URL = 'https://itunes.apple.com/cn/app/id587238847?l=zh&ls=1&mt=8';
-    var APP_SCHEME = 'kfcapplinkurl://menu?action=';
-    var WEB_DOWNLOAD_URL = 'https://a.app.qq.com/o/simple.jsp?pkgname=com.yek.android.kfc.activitys';
-    
-    var storeMap = {
-        'huawei': 'hiapplink://com.huawei.appmarket?appId=C10640835',
-        'harmony': 'hiapplink://com.huawei.appmarket?appId=C10640835',
-        'honor': 'hiapplink://com.huawei.appmarket?appId=C10640835',
-        'vivo': 'vivomarket://details?id=' + ANDROID_PACKAGE,
-        'oppo': 'oppomarket://details?id=' + ANDROID_PACKAGE,
-        'realme': 'oppomarket://details?id=' + ANDROID_PACKAGE,
-        'xiaomi': 'mimarket://details?id=' + ANDROID_PACKAGE,
-        'redmi': 'mimarket://details?id=' + ANDROID_PACKAGE,
-        'samsung': 'samsungapps://ProductDetail/' + ANDROID_PACKAGE,
-        'oneplus': 'market://details?id=' + ANDROID_PACKAGE,
-        'meizu': 'mstore://details?package_name=' + ANDROID_PACKAGE,
-        'other': 'market://details?id=' + ANDROID_PACKAGE
-    };
-
-    var directStoreMap = {
-        'huawei': 'https://appgallery.huawei.com/app/detail?id=com.yumc.kfc.superapp',
-        'vivo': 'https://h5.appstore.vivo.com.cn/#/details?pkgname=' + ANDROID_PACKAGE,
-        'oppo': 'market://details?id=' + ANDROID_PACKAGE,
-        'realme': 'market://details?id=' + ANDROID_PACKAGE,
-        'xiaomi': 'https://app.mi.com/details?id=' + ANDROID_PACKAGE,
-        'samsung': 'https://galaxystore.samsung.com/detail/' + ANDROID_PACKAGE,
-        'other': 'https://a.app.qq.com/o/simple.jsp?pkgname=' + ANDROID_PACKAGE
-    };
-
     // 工具函数
     function tryOpenApp(APP_SCHEME, fallback) {
         if (window._openAppTimer) clearTimeout(window._openAppTimer);
