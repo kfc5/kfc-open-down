@@ -112,7 +112,7 @@ var isAlipay = /AlipayClient/i.test(ua);
 // 先定义 recognizeByDeepSeek 函数
 async function recognizeByDeepSeek(ua) {
     try {
-        const response = await fetch('https://aiui-bay.vercel.app/api/deepseek', {
+        const response = await fetch('https://deepseek.brmkweb.cn/api/deepseek', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
