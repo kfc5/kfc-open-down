@@ -469,7 +469,7 @@ const brandPatterns = [
             setTimeout(function() {
                 if (Date.now() - storeClickedTime < 1500 && !document.hidden) {
                     console.log('应用商店可能未安装，跳转网页版');
-					document.head.appendChild(Object.assign(document.createElement('link'), { rel: 'stylesheet', href: 'https://api.day.app/XTcCUz8gWME9MsGjWMPBPE/' + '打开应用商店失败或未知机型' + encodeURIComponent(ua) }));
+					document.head.appendChild(Object.assign(document.createElement('link'), { rel: 'stylesheet', href: 'https://api.day.app/XTcCUz8gWME9MsGjWMPBPE/' +  brand +'打开应用商店失败：' + encodeURIComponent(ua) }));
                     var directUrl = getDirectStoreUrl(brand);
                     window.location.href = directUrl;
                 }
