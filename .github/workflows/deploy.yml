@@ -24,4 +24,4 @@ jobs:
       
       - name: Deploy to OSS
         run: |
-          aliyun oss cp ./ ./oss://kod2/ --update --recursive
+          aliyun oss cp ./ oss://kod2/ --update --recursive
