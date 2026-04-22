@@ -4,3 +4,19 @@
     Access-Control-Allow-Origin = "https://kfc.brmkweb.cn"
     Access-Control-Allow-Methods = "GET, HEAD, OPTIONS"
     Access-Control-Allow-Headers = "*"
+
+[build]
+  command = "npm run build"
+  publish = "docs"
+
+# 只有 docs 文件夹有变化时才构建（添加输出信息方便调试）
+[build.ignore]
+  command = """ 
+  if git diff --quiet HEAD^ HEAD docs/; then
+    echo "📁 No changes in docs folder, skipping build"
+    exit 0
+  else
+    echo "🔄 Changes detected in docs folder, proceeding with build"
+    exit 1
+  fi
+  """
