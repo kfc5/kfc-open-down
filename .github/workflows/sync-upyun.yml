@@ -1,79 +1,35 @@
-name: 同步又拍云
+- name: 同步又拍云
+  uses: actions/setup-python@v5
+  with:
+    python-version: '3.11'
 
-on:
-  push:
-    branches: [ "master" ]
-  workflow_dispatch:
+- name: Install Upyun SDK
+  run: |
+    pip install upyun
 
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: 拉取代码
-        uses: actions/checkout@v4
+- name: Upload to Upyun (Python script)
+  env:
+    UPYUN_BUCKET: ${{ secrets.UPYUN_BUCKET }}
+    UPYUN_OPERATOR: ${{ secrets.UPYUN_OPERATOR }}
+    UPYUN_PASSWORD: ${{ secrets.UPYUN_PASSWORD }}
+  run: |
+    python -c "
+import upyun
+import os
 
-      - name: 安装又拍云 SDK
-        run: |
-          pip install upyun
+# 初始化客户端
+up = upyun.UpYun(
+    os.environ['UPYUN_BUCKET'],
+    os.environ['UPYUN_OPERATOR'],
+    os.environ['UPYUN_PASSWORD']
+)
 
-      - name: 同步文件到又拍云
-        env:
-          UPYUN_BUCKET: ${{ secrets.UPYUN_BUCKET }}
-          UPYUN_OPERATOR: ${{ secrets.UPYUN_OPERATOR }}
-          UPYUN_PASSWORD: ${{ secrets.UPYUN_PASSWORD }}
-        run: |
-          python << 'EOF'
-          import os
-          import upyun
-          from pathlib import Path
-
-          # 获取配置
-          bucket = os.environ['UPYUN_BUCKET']
-          operator = os.environ['UPYUN_OPERATOR']
-          password = os.environ['UPYUN_PASSWORD']
-
-          print(f"连接到又拍云: {bucket}")
-          
-          # 连接又拍云
-          up = upyun.UpYun(bucket, operator, password)
-          
-          # 需要同步的文件扩展名（在这里修改你要同步的文件类型）
-          extensions = ['.html', '.css', '.js', '.jpg', '.png', '.gif', '.svg']
-          
-          # 排除的目录
-          exclude_dirs = ['.git', '__pycache__', 'node_modules', '.github']
-          
-          success_count = 0
-          fail_count = 0
-          
-          # 遍历所有文件
-          for file_path in Path('.').rglob('*'):
-              if not file_path.is_file():
-                  continue
-              
-              # 检查是否在排除目录中
-              should_exclude = False
-              for exclude_dir in exclude_dirs:
-                  if exclude_dir in file_path.parts:
-                      should_exclude = True
-                      break
-              
-              if should_exclude:
-                  continue
-              
-              # 检查文件扩展名（如果extensions不为空）
-              if extensions and file_path.suffix.lower() not in extensions:
-                  continue
-              
-              remote_path = str(file_path)
-              try:
-                  with open(file_path, 'rb') as f:
-                      up.put(remote_path, f.read())
-                  print(f'✓ 上传成功: {remote_path}')
-                  success_count += 1
-              except Exception as e:
-                  print(f'✗ 上传失败: {remote_path} - {e}')
-                  fail_count += 1
-          
-          print(f'\n同步完成！成功: {success_count}, 失败: {fail_count}')
-          EOF
+# 上传 ./docs 目录下的文件
+for root, dirs, files in os.walk('./docs'):
+    for file in files:
+        local_path = os.path.join(root, file)
+        remote_path = local_path.replace('./docs', '', 1)
+        with open(local_path, 'rb') as f:
+            up.put(remote_path, f)
+        print(f'Uploaded: {remote_path}')
+"
