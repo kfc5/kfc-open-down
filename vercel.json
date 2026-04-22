@@ -8,6 +8,14 @@
         {
           "key": "Access-Control-Allow-Origin",
           "value": "https://kfc.brmkweb.cn"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET, HEAD, OPTIONS"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "*"
         }
       ]
     }
