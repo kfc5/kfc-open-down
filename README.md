@@ -4,6 +4,6 @@
 
 ## 📊 部署状态
 
-[![七牛云](https://github.com/kfc5/my-site/actions/workflows/sync-qiniu.yml/badge.svg)](https://github.com/kfc5/my-site/actions/workflows/sync-qiniu.yml)
-[![又拍云](https://github.com/kfc5/my-site/actions/workflows/sync-upyun.yml/badge.svg)](https://github.com/kfc5/my-site/actions/workflows/sync-upyun.yml)
-[![阿里云](https://github.com/kfc5/my-site/actions/workflows/sync-aliyunoss.yml/badge.svg)](https://github.com/kfc5/my-site/actions/workflows/sync-aliyunoss.yml)
+[![七牛云](https://github.com/kfc5/kfc-open-down/actions/workflows/sync-qiniu.yml/badge.svg)](https://github.com/kfc5/kfc-open-down/actions/workflows/sync-qiniu.yml)
+[![又拍云](https://github.com/kfc5/kfc-open-down/actions/workflows/sync-upyun.yml/badge.svg)](https://github.com/kfc5/kfc-open-down/actions/workflows/sync-upyun.yml)
+[![阿里云](https://github.com/kfc5/kfc-open-down/actions/workflows/sync-aliyunoss.yml/badge.svg)](https://github.com/kfc5/kfc-open-down/actions/workflows/sync-aliyunoss.yml)
