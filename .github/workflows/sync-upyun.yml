@@ -17,32 +17,32 @@ jobs:
           python-version: '3.11'
 
       - name: Install Upyun SDK
-        run: |
-          pip install upyun
+        run: pip install upyun
 
-      - name: Upload to Upyun (Python script)
+      - name: Create upload script
+        run: |
+          cat > upload.py << 'EOF'
+          import upyun
+          import os
+
+          bucket = os.environ["UPYUN_BUCKET"]
+          operator = os.environ["UPYUN_OPERATOR"]
+          password = os.environ["UPYUN_PASSWORD"]
+
+          up = upyun.UpYun(bucket, operator, password)
+
+          for root, dirs, files in os.walk("./docs"):
+              for file in files:
+                  local_path = os.path.join(root, file)
+                  remote_path = local_path.replace("./docs", "", 1)
+                  with open(local_path, "rb") as f:
+                      up.put(remote_path, f)
+                  print(f"Uploaded: {remote_path}")
+          EOF
+
+      - name: Upload to Upyun
         env:
           UPYUN_BUCKET: ${{ secrets.UPYUN_BUCKET }}
           UPYUN_OPERATOR: ${{ secrets.UPYUN_OPERATOR }}
           UPYUN_PASSWORD: ${{ secrets.UPYUN_PASSWORD }}
-        run: |
-          python -c "
-import upyun
-import os
-
-# 初始化客户端
-up = upyun.UpYun(
-    os.environ['UPYUN_BUCKET'],
-    os.environ['UPYUN_OPERATOR'],
-    os.environ['UPYUN_PASSWORD']
-)
-
-# 上传 ./docs 目录下的文件
-for root, dirs, files in os.walk('./docs'):
-    for file in files:
-        local_path = os.path.join(root, file)
-        remote_path = local_path.replace('./docs', '', 1)
-        with open(local_path, 'rb') as f:
-            up.put(remote_path, f)
-        print(f'Uploaded: {remote_path}')
-"
+        run: python upload.py
