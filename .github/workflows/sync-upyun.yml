@@ -1,5 +1,5 @@
 # .github/workflows/sync-upyun.yml
-name: 同步到又拍云
+name: 同步又拍云
 
 on:
   push:
