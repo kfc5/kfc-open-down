@@ -6,7 +6,6 @@
     Access-Control-Allow-Headers = "*"
 
 [build]
-  command = "npm run build"
   publish = "docs"
   ignore = """
   # 检查是否是首次构建
