@@ -1,4 +1,4 @@
-name: 七牛云同步
+name: 七牛云同步（增强版）
 
 on:
   push:
@@ -29,3 +29,20 @@ jobs:
                           --bucket=${{ secrets.QINIU_BUCKET }} \
                           --overwrite \
                           --thread-count=4
+
+      - name: Get uploaded files and refresh CDN
+        env:
+          CDN_DOMAIN: ${{ secrets.QINIU_CDN_DOMAIN }}  # 建议单独配置这个 Secret
+        run: |
+          # 查找所有上传的文件（排除目录）
+          find ./docs -type f | while read file; do
+            # 去掉 ./docs 前缀，生成完整的 CDN URL
+            relative_path=${file#./docs}
+            echo "https://${CDN_DOMAIN}/docs${relative_path}"
+          done > urls_to_refresh.txt
+          
+          echo "Files to refresh:"
+          cat urls_to_refresh.txt
+          
+          # 执行刷新（注意：大量文件会消耗较多配额）
+          qshell cdnrefresh urls_to_refresh.txt
