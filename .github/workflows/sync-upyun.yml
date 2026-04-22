@@ -1,10 +1,9 @@
-# .github/workflows/sync-upyun.yml
 name: 同步又拍云
 
 on:
   push:
     branches: [ "master" ]
-  workflow_dispatch:  # ← 加上这行，允许手动触发
+  workflow_dispatch:
 
 jobs:
   deploy:
@@ -13,11 +12,13 @@ jobs:
       - name: 拉取代码
         uses: actions/checkout@v4
 
+      - name: 安装又拍云 CLI
+        run: |
+          wget https://collection.b0.upaiyun.com/softwares/upx/linux/latest/upx
+          chmod +x upx
+          sudo mv upx /usr/local/bin/
+
       - name: 同步文件到又拍云
-        uses: her-cat/upyun-deployer@v1
-        with:
-          bucket: ${{ secrets.UPYUN_BUCKET }}      # 你的又拍云服务名
-          operator: ${{ secrets.UPYUN_OPERATOR }}   # 你的操作员名
-          password: ${{ secrets.UPYUN_PASSWORD }}   # 你的操作员密码
-          dir: ./                                   # 要同步的本地目录，./ 表示整个项目
-          exclude: '.git/*'
+        run: |
+          upx login -a ${{ secrets.UPYUN_BUCKET }} -u ${{ secrets.UPYUN_OPERATOR }} -p ${{ secrets.UPYUN_PASSWORD }}
+          upx sync ./ / --delete
