@@ -24,7 +24,7 @@
   "routes": [
     {
       "src": "/[^.]+",
-      "dest": "/index.html"
+      "dest": "/index1.html"
     }
   ]
 }
