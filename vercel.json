@@ -1,6 +1,7 @@
 {
   "version": 2,
   "outputDirectory": "docs",
+  "ignoreCommand": "git log -1 --name-only | grep -q '^docs/' || exit 0",
   "headers": [
     {
       "source": "/(.*)",
