@@ -1,8 +1,8 @@
-name: Sync to Qiniu Cloud
+name: 七牛云同步
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ master ]
   workflow_dispatch:
 
 jobs:
@@ -11,21 +11,25 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install qshell (七牛云官方 CLI)
+      - name: Install qshell
         run: |
           wget https://github.com/qiniu/qshell/releases/download/v2.14.0/qshell-v2.14.0-linux-amd64.tar.gz
           tar -xzf qshell-v2.14.0-linux-amd64.tar.gz
           sudo mv qshell /usr/local/bin/
 
-      - name: Configure qshell with zone
+      - name: Configure qshell
         run: |
-          # 配置账号，zone 参数指定机房
-          qshell account ${{ secrets.QINIU_AK }} ${{ secrets.QINIU_SK }} github-actions --zone ${{ secrets.QINIU_ZONE }}
+          qshell account ${{ secrets.QINIU_AK }} ${{ secrets.QINIU_SK }} github-actions
+
+      - name: Set default zone
+        run: |
+          qshell config zone ${{ secrets.QINIU_ZONE }}
 
       - name: Upload to Qiniu Bucket
         run: |
-          # 上传 dist 目录（请根据你的构建输出目录修改）
           qshell qupload2 --src-dir=./docs \
                           --bucket=${{ secrets.QINIU_BUCKET }} \
                           --overwrite \
-                          --thread-count=4
+                          --thread-count=4 \
+                          --check-exists \
+                          --check-hash
