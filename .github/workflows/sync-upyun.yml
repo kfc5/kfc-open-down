@@ -3,7 +3,8 @@ name: 同步到又拍云
 
 on:
   push:
-    branches: ["master"] # 当你推送到 main 或 master 分支时触发
+    branches: [ "master" ]
+  workflow_dispatch:  # ← 加上这行，允许手动触发
 
 jobs:
   deploy:
