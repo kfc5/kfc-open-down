@@ -1,0 +1,21 @@
+{
+  "version": 2,
+  "outputDirectory": "docs",
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "https://kfc.brmkweb.cn"
+        }
+      ]
+    }
+  ],
+  "routes": [
+    {
+      "src": "/[^.]+",
+      "dest": "/index.html"
+    }
+  ]
+}
