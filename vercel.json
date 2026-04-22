@@ -1,7 +1,6 @@
 {
   "version": 2,
   "outputDirectory": "docs",
-  "ignoreCommand": "git log -1 --name-only | grep -q '^docs/' || exit 0",
   "headers": [
     {
       "source": "/(.*)",
@@ -9,14 +8,6 @@
         {
           "key": "Access-Control-Allow-Origin",
           "value": "https://kfc.brmkweb.cn"
-        },
-        {
-          "key": "Access-Control-Allow-Methods",
-          "value": "GET, HEAD, OPTIONS"
-        },
-        {
-          "key": "Access-Control-Allow-Headers",
-          "value": "*"
         }
       ]
     }
@@ -24,7 +15,7 @@
   "routes": [
     {
       "src": "/[^.]+",
-      "dest": "/index1.html"
+      "dest": "/index.html"
     }
   ]
 }
