@@ -1,19 +1,32 @@
-- name: 同步又拍云
-  uses: actions/setup-python@v5
-  with:
-    python-version: '3.11'
+name: "又拍云同步"
 
-- name: Install Upyun SDK
-  run: |
-    pip install upyun
+on:
+  push:
+    branches: [ master ]
+  workflow_dispatch:
 
-- name: Upload to Upyun (Python script)
-  env:
-    UPYUN_BUCKET: ${{ secrets.UPYUN_BUCKET }}
-    UPYUN_OPERATOR: ${{ secrets.UPYUN_OPERATOR }}
-    UPYUN_PASSWORD: ${{ secrets.UPYUN_PASSWORD }}
-  run: |
-    python -c "
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 同步又拍云
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Upyun SDK
+        run: |
+          pip install upyun
+
+      - name: Upload to Upyun (Python script)
+        env:
+          UPYUN_BUCKET: ${{ secrets.UPYUN_BUCKET }}
+          UPYUN_OPERATOR: ${{ secrets.UPYUN_OPERATOR }}
+          UPYUN_PASSWORD: ${{ secrets.UPYUN_PASSWORD }}
+        run: |
+          python -c "
 import upyun
 import os
 
