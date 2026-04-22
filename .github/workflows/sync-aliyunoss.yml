@@ -1,5 +1,5 @@
 # .github/workflows/deploy.yml
-name: Deploy to Aliyun OSS
+name: 同步阿里云OSS
 
 on:
   push:
