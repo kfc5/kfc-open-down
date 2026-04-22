@@ -15,15 +15,11 @@ jobs:
       - name: 安装又拍云命令行工具
         run: |
           pip install upyun-cli
-          # 查看安装位置
-          which upyun-cli
-          # 添加到 PATH
-          export PATH="$HOME/.local/bin:$PATH"
 
       - name: 同步文件到又拍云
         run: |
-          export PATH="$HOME/.local/bin:$PATH"
-          upyun-cli sync ./ \
+          # 使用完整路径
+          python -m upyun_cli.cmd sync ./ \
             --bucket ${{ secrets.UPYUN_BUCKET }} \
             --username ${{ secrets.UPYUN_OPERATOR }} \
             --password ${{ secrets.UPYUN_PASSWORD }} \
