@@ -1,4 +1,4 @@
-name: "同步阿里云 OSS"
+name: "阿里云"
 
 on:
   push:

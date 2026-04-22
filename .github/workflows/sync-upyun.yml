@@ -1,4 +1,4 @@
-name: "同步又拍云"
+name: "又拍云"
 
 on:
   push:

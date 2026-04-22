@@ -1,4 +1,4 @@
-name: 同步七牛云
+name: "七牛云"
 
 on:
   push:
