@@ -32,7 +32,7 @@ jobs:
 
       - name: Get uploaded files and refresh CDN
         env:
-          CDN_DOMAIN: ${{ secrets.QINIU_CDN_DOMAIN }}  # 建议单独配置这个 Secret
+          CDN_DOMAIN: ${{ secrets.QINIU_CDN_DOMAIN }}
         run: |
           # 查找所有上传的文件（排除目录）
           find ./docs -type f | while read file; do
@@ -43,6 +43,7 @@ jobs:
           
           echo "Files to refresh:"
           cat urls_to_refresh.txt
+          echo "Total files: $(wc -l < urls_to_refresh.txt)"
           
-          # 执行刷新（注意：大量文件会消耗较多配额）
-          qshell cdnrefresh urls_to_refresh.txt
+          # 使用 -i 参数指定输入文件
+          qshell cdnrefresh -i urls_to_refresh.txt
