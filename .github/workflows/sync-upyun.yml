@@ -12,18 +12,27 @@ jobs:
       - name: 拉取代码
         uses: actions/checkout@v4
 
-      - name: 安装又拍云命令行工具
+      - name: 安装 Python 和 pip
         run: |
-          pip install upyun-cli
-
+          sudo apt-get update
+          sudo apt-get install -y python3 python3-pip
+          
+      - name: 安装又拍云工具
+        run: |
+          pip3 install --user upyun-cli
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+          
+      - name: 验证安装
+        run: |
+          which upyun-cli || echo "upyun-cli not in PATH"
+          ls -la $HOME/.local/bin/ || echo "dir not exist"
+          
       - name: 同步文件到又拍云
         run: |
-          upyun-cli sync ./ \
+          $HOME/.local/bin/upyun-cli sync ./ \
             --bucket ${{ secrets.UPYUN_BUCKET }} \
             --username ${{ secrets.UPYUN_OPERATOR }} \
             --password ${{ secrets.UPYUN_PASSWORD }} \
             --include "*.html" \
             --include "*.css" \
-            --include "*.js" \
-            --include "images/**" \
             --exclude "*"
