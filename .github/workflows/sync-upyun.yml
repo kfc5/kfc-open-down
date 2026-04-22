@@ -20,3 +20,4 @@ jobs:
           operator: ${{ secrets.UPYUN_OPERATOR }}   # 你的操作员名
           password: ${{ secrets.UPYUN_PASSWORD }}   # 你的操作员密码
           dir: ./                                   # 要同步的本地目录，./ 表示整个项目
+          exclude: '.git/*'
