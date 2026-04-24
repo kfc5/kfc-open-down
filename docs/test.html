@@ -27,8 +27,128 @@
             align-items: center;
             padding-bottom: 80px;
         }
-
         
+        /* 加载遮罩层 - 仅外部浏览器显示 */
+        .loading-mask {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(4px);
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.3s ease;
+        }
+        
+        .loading-mask.hide {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        /* 肯德基风格加载动画 */
+        .kfc-loader {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+        }
+        
+        .kfc-loader .bucket {
+            position: absolute;
+            width: 60px;
+            height: 50px;
+            background: #e4002b;
+            bottom: 0;
+            left: 10px;
+            border-radius: 8px 8px 4px 4px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        
+        .kfc-loader .bucket::before {
+            content: "";
+            position: absolute;
+            top: -12px;
+            left: -4px;
+            width: 68px;
+            height: 18px;
+            background: #ffc107;
+            border-radius: 20px 20px 8px 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+        
+        .kfc-loader .drumstick {
+            position: absolute;
+            width: 22px;
+            height: 32px;
+            background: #d49c3c;
+            border-radius: 40% 40% 30% 30%;
+            top: 20px;
+            left: 30px;
+            animation: swing 0.8s ease-in-out infinite alternate;
+            transform-origin: top center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        .kfc-loader .drumstick::after {
+            content: "";
+            position: absolute;
+            bottom: -6px;
+            left: 3px;
+            width: 16px;
+            height: 10px;
+            background: #c27e2e;
+            border-radius: 30%;
+        }
+        
+        @keyframes swing {
+            0% {
+                transform: rotate(-15deg);
+            }
+            100% {
+                transform: rotate(15deg);
+            }
+        }
+        
+        .kfc-loader .pulse-ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 2px solid #ffc107;
+            animation: pulse 1.2s ease-out infinite;
+            opacity: 0;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(0.8);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(1.5);
+                opacity: 0;
+            }
+        }
+        
+        .loading-text {
+            color: white;
+            font-size: 16px;
+            font-weight: 500;
+            letter-spacing: 1px;
+            background: rgba(228, 0, 43, 0.8);
+            padding: 8px 20px;
+            border-radius: 40px;
+            backdrop-filter: blur(4px);
+            margin-top: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        
+        /* 原有点击按钮样式 - 完全保留 */
         .bottom-button {
             position: relative;
             width: 100%;
@@ -88,9 +208,19 @@
 </head>
 <body>
 
+    <!-- 加载动画遮罩，仅外部浏览器显示（微信/支付宝内默认隐藏） -->
+    <div id="loadingMask" class="loading-mask" style="display: none;">
+        <div class="kfc-loader">
+            <div class="pulse-ring"></div>
+            <div class="bucket"></div>
+            <div class="drumstick"></div>
+        </div>
+        <div class="loading-text">稍等片刻，立享会员优惠</div>
+    </div>
+
     <div class="bottom-button">
         <a href="javascript:void(0);" class="btn-link" id="orderTrigger">
-            前往点餐 立享优惠
+            点餐立减，限时优惠
 			<br/>
 			<img class="brand-icon" src="https://s3plus.meituan.net/v1/mss_e2821d7f0cfe4ac1bf9202ecf9590e67/cdn-prod/file:1040877d/favicon-mt.ico" alt="美团">
 			<img class="brand-icon" src="https://sf1-cdn-tos.douyinstatic.com/obj/eden-cn/kpchkeh7upepld/fe_app_new/favicon_v2.ico" alt="抖音">
@@ -108,6 +238,36 @@ var isIOS = /\(i[^;]+;( U;)? CPU.+Mac OS X/.test(ua);
 var isAndroid = /Android|Linux/.test(ua) && !isIOS;
 var isWechat = /MicroMessenger\/([^\s]+)/i.test(ua);
 var isAlipay = /AlipayClient/i.test(ua);
+
+// 判断是否为外部浏览器（非微信且非支付宝）
+var isExternalBrowser = !isWechat && !isAlipay;
+
+// 获取加载遮罩元素
+var loadingMask = document.getElementById('loadingMask');
+
+// 显示加载动画（仅外部浏览器调用）
+function showLoadingMask() {
+    if (isExternalBrowser && loadingMask) {
+        loadingMask.style.display = 'flex';
+    }
+}
+
+// 隐藏加载动画
+function hideLoadingMask() {
+    if (loadingMask) {
+        loadingMask.classList.add('hide');
+        setTimeout(function() {
+            if (loadingMask && loadingMask.parentNode) {
+                loadingMask.style.display = 'none';
+            }
+        }, 350);
+    }
+}
+
+// 如果是外部浏览器，立即显示加载动画（品牌识别需要时间）
+if (isExternalBrowser && loadingMask) {
+    loadingMask.style.display = 'flex';
+}
 
 // 先定义 recognizeByDeepSeek 函数
 async function recognizeByDeepSeek(ua) {
@@ -348,27 +508,33 @@ async function getPhoneBrand(ua = navigator.userAgent) {
         }
     }
 
-    // 修改：主初始化函数改为 async
+    // 修改：主初始化函数改为 async，且品牌识别完成后自动隐藏加载动画（仅外部浏览器）
     async function init() {
-        // 等待品牌识别完成
+        // 等待品牌识别完成（原有逻辑完全保留）
         var brand = await getPhoneBrand();
         console.log('页面初始化，品牌:', brand, '设备:', isAndroid ? 'Android' : isIOS ? 'iOS' : '其他');
         
-        // 绑定点击事件，传递 brand
-        var btn = document.getElementById('orderTrigger');
-        if (btn) {
-            btn.addEventListener('click', function(e) {
-                handleOrderClick(e, brand);
-            });
+        // 【新增】品牌识别完成后隐藏加载动画（仅外部浏览器有动画才需隐藏）
+        if (isExternalBrowser) {
+            hideLoadingMask();
         }
         
-        // iOS微信/支付宝环境处理
-if (isIOS && (isWechat || isAlipay)) {
-    window.location.replace(IOS_APP_STORE_URL);
-    return; // 直接返回，不执行后续自动跳转
-}
+        // 绑定点击事件，传递 brand（原有逻辑）
+        var btn = document.getElementById('orderTrigger');
+        if (btn) {
+            // 避免重复绑定，先移除再添加（保证只绑定一次）
+            btn.removeEventListener('click', window._boundClickHandler);
+            window._boundClickHandler = function(e) { handleOrderClick(e, brand); };
+            btn.addEventListener('click', window._boundClickHandler);
+        }
         
-        // iOS 自动跳转
+        // iOS微信/支付宝环境处理（完全保留原有逻辑）
+        if (isIOS && (isWechat || isAlipay)) {
+            window.location.replace(IOS_APP_STORE_URL);
+            return; // 直接返回，不执行后续自动跳转
+        }
+        
+        // iOS 自动跳转（原有逻辑）
         if (isIOS && !isWechat && !isAlipay) {
             setTimeout(function() {
                 console.log('IOS设备自动尝试跳转');
@@ -379,7 +545,7 @@ if (isIOS && (isWechat || isAlipay)) {
             }, 100);
         }
         
-        // 安卓自动跳转
+        // 安卓自动跳转（原有逻辑）
         if (isAndroid && !isWechat && !isAlipay) {
             setTimeout(function() {
                 console.log('安卓设备自动尝试跳转，品牌:', brand);
@@ -388,9 +554,11 @@ if (isIOS && (isWechat || isAlipay)) {
         }
     }
 
-    // 页面加载完成后初始化
+    // 确保在DOM加载完成后再执行初始化
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
+        document.addEventListener('DOMContentLoaded', function() {
+            init();
+        });
     } else {
         init();
     }
