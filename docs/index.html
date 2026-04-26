@@ -2,587 +2,281 @@
 <html>
 <head>
     <meta charset="utf-8">
-	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"/>
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>肯德基点餐/团购核销</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>肯德基App · 限时领券</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
-        
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             min-height: 100vh;
-            background-image: url('https://res.kfc.com.cn/common/202304/2023040314285274500035992c3d0.jpg');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
+            background: linear-gradient(145deg, #fff5e8 0%, #ffede0 100%);
             display: flex;
             flex-direction: column;
-            justify-content: flex-end;
+            justify-content: center;
             align-items: center;
-            padding-bottom: 80px;
+            padding: 24px 20px;
         }
 
-        
-        .bottom-button {
-            position: relative;
+        /* 肯德基品牌卡片 */
+        .card {
+            max-width: 400px;
             width: 100%;
-            max-width: 300px;
-            z-index: 10;
-            margin-bottom: 20px;
-        }
-        
-        .btn-link {
-            display: block;
-            background-color: #ffffff;
-            color: #e4002b;  /* 肯德基红色 */
+            background: #ffffff;
+            border-radius: 48px 32px 48px 32px;
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(228, 0, 43, 0.1);
+            overflow: hidden;
             text-align: center;
-            padding: 16px 20px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-size: 18px;
-            font-weight: bold;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+            padding: 40px 24px 48px;
             transition: all 0.2s ease;
-            border: 1px solid #e4002b;
+        }
+
+        .kfc-logo {
+            width: 80px;
+            height: 80px;
+            background: #e4002b;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            box-shadow: 0 8px 14px rgba(228, 0, 43, 0.3);
+        }
+
+        .kfc-logo span {
+            font-size: 44px;
+            font-weight: 800;
+            color: white;
+            letter-spacing: 2px;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 800;
+            color: #e4002b;
+            margin-bottom: 12px;
+            letter-spacing: -0.3px;
+        }
+
+        .tagline {
+            font-size: 16px;
+            color: #b45f1b;
+            background: #fff0e0;
+            display: inline-block;
+            padding: 6px 18px;
+            border-radius: 40px;
+            margin-bottom: 28px;
+            font-weight: 500;
+        }
+
+        .offer-box {
+            background: #fef7e0;
+            border-radius: 32px;
+            padding: 20px 16px;
+            margin: 20px 0 24px;
+            border: 1px dashed #ffb347;
+        }
+
+        .price-big {
+            font-size: 42px;
+            font-weight: 800;
+            color: #e4002b;
+        }
+
+        .price-big small {
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .desc {
+            color: #5a3e1b;
+            font-size: 15px;
+            line-height: 1.4;
+            margin-top: 8px;
+        }
+
+        .btn-download {
+            display: block;
+            width: 100%;
+            background: linear-gradient(105deg, #e4002b 0%, #c20025 100%);
+            border: none;
+            padding: 18px 12px;
+            font-size: 20px;
+            font-weight: 700;
+            color: white;
+            border-radius: 60px;
             cursor: pointer;
-            -webkit-tap-highlight-color: transparent;
+            text-align: center;
+            margin: 20px 0 16px;
+            box-shadow: 0 8px 18px rgba(228, 0, 43, 0.3);
+            transition: 0.2s;
+            font-family: inherit;
         }
-        
-        .btn-link:hover {
-            background-color: #e4002b;
-            color: #ffffff;
-            border-color: #ffffff;
-            transform: scale(1.02);
-            box-shadow: 0 6px 20px rgba(228, 0, 43, 0.3);
+
+        .btn-download:active {
+            transform: scale(0.97);
+            background: #b00022;
         }
-        
-        @media (max-width: 480px) {
-            body {
-                padding-bottom: 60px;
+
+        .note {
+            font-size: 12px;
+            color: #aa8a66;
+            background: #fff6ed;
+            padding: 12px;
+            border-radius: 28px;
+            margin-top: 20px;
+        }
+
+        .footnote {
+            font-size: 11px;
+            color: #bba88a;
+            margin-top: 24px;
+        }
+
+        hr {
+            margin: 16px 0;
+            border: none;
+            height: 1px;
+            background: #ffe0c0;
+        }
+
+        @media (max-width: 500px) {
+            .card {
+                padding: 28px 20px 36px;
             }
-            
-            .btn-link {
-                padding: 14px 18px;
-                font-size: 16px;
-                border-width: 2px;
+            h1 {
+                font-size: 26px;
+            }
+            .btn-download {
+                padding: 16px 12px;
+                font-size: 18px;
             }
         }
-        
-        .btn-link {
-            text-shadow: 0 1px 1px rgba(255, 255, 255, 0.5);
-        }
-		.brand-icon {
-		    width: 20px;
-			height: 20px;
-			vertical-align: middle;
-			margin-right: 5px;
-		}
     </style>
-<script charset="UTF-8" id="LA_COLLECT" src="//sdk.51.la/js-sdk-pro.min.js"></script>
-<script>LA.init({id:"3Pci1dkZEUriCPrO",ck:"3Pci1dkZEUriCPrO",autoTrack:true})</script>
 </head>
 <body>
 
-    <div class="bottom-button">
-        <a href="javascript:void(0);" class="btn-link" id="orderTrigger">
-            前往点餐 立享优惠
-			<br/>
-			<img class="brand-icon" src="https://s3plus.meituan.net/v1/mss_e2821d7f0cfe4ac1bf9202ecf9590e67/cdn-prod/file:1040877d/favicon-mt.ico" alt="美团">
-			<img class="brand-icon" src="https://sf1-cdn-tos.douyinstatic.com/obj/eden-cn/kpchkeh7upepld/fe_app_new/favicon_v2.ico" alt="抖音">
-			<img class="brand-icon" src="https://s1-11674.kwimgs.com/udata/pkg/fe/favicon.70ff1fcc.ico" alt="快手">
-			<img class="brand-icon" src="https://h5.dianping.com/favicon.ico" alt="大众点评">
-        </a>
+<div class="card">
+    <div class="kfc-logo">
+        <span>KFC</span>
     </div>
-<script src="https://cdn.jsdelivr.net/npm/ua-parser-js@latest/dist/ua-parser.min.js"></script>
-<script type="text/javascript">
-(function() {
+    <h1>📱 肯德基App</h1>
+    <div class="tagline">✨ 新客专享 · 点餐立减 ✨</div>
+
+    <div class="offer-box">
+        <div class="price-big">
+            ￥8 <small>满减券</small>
+        </div>
+        <div class="price-big" style="font-size: 28px; margin-top: 6px;">
+            + 免费蛋挞 🥧
+        </div>
+        <div class="desc">
+            下载App即领<br>限时福利，到店/宅急送通用
+        </div>
+    </div>
+
+    <button class="btn-download" id="downloadBtn">🍔 下载肯德基App领优惠 🍟</button>
+
+    <div class="note">
+        💡 提示：若无法直接下载，请点击右上角「…」<br>选择「在浏览器中打开」即可正常下载。
+    </div>
+    <div class="footnote">
+        活动最终解释权归肯德基所有
+    </div>
+</div>
+
+<script>
+    // 环境检测
     var ua = navigator.userAgent;
-    console.log('UserAgent:', ua);
-	
-
-    var isIOS = /\(i[^;]+;( U;)? CPU.+Mac OS X/.test(ua);
-    var isAndroid = /Android|Linux/.test(ua) && !isIOS;
-    var isWechat = /MicroMessenger\/([^\s]+)/i.test(ua);
+    var isWechat = /MicroMessenger/i.test(ua);
     var isAlipay = /AlipayClient/i.test(ua);
+    var isIOS = /iPhone|iPad|iPod/i.test(ua);
+    var isAndroid = /Android/i.test(ua);
 
-function getPhoneBrand(ua = navigator.userAgent) {
-    const parser = new UAParser(ua);
-    const result = parser.getResult();
-    
-    // 品牌映射表（增加更多别名）
-    const brandMap = {
-        'apple': 'apple',
-        'samsung': 'samsung',
-        'huawei': 'huawei',
-        'honor': 'honor',
-        'xiaomi': 'xiaomi',
-        'redmi': 'xiaomi',     // 红米归为小米
-        'poco': 'xiaomi',      // POCO归为小米
-        'oppo': 'oppo',
-        'realme': 'realme',
-        'vivo': 'vivo',
-        'oneplus': 'oneplus',
-        'meizu': 'meizu'
-    };
-    
-    // 获取并规范化 vendor
-    let vendor = result.device.vendor;
-    
-if (vendor) {
-    // 转小写
-    vendor = vendor.toLowerCase();
-    
-    // 1. 先精确匹配（最快，最准确）
-    if (brandMap[vendor]) {
-        console.log('从设备中获取品牌（精确匹配）:', brandMap[vendor]);
-        return brandMap[vendor];
-    }
-    
-    // 2. 再模糊匹配（处理 "Xiaomi Communications" 等情况）
-    for (const key in brandMap) {
-        if (vendor.includes(key)) {
-            console.log('从设备中获取品牌（模糊匹配）:', brandMap[key]);
-            return brandMap[key];
+    // 下载链接（肯德基官方）
+    var APP_STORE_URL = 'https://apps.apple.com/cn/app/id587779942';        // iOS App Store
+    var ANDROID_STORE_MARKET = 'market://details?id=com.yek.android.kfc.activity';
+    var ANDROID_WEB_FALLBACK = 'https://order.kfc.com.cn/preorder-taro/home';                // 肯德基官方点餐页
+
+    // 官方URL Scheme (仅外部浏览器使用)
+    var KFC_SCHEME = 'kfcapplinkurl://menu?action=';
+
+    function openInExternalBrowser() {
+        if (isIOS) {
+            // iOS 在 Safari 中可以直接跳转App Store（符合规范）
+            window.location.href = APP_STORE_URL;
+        } else if (isAndroid) {
+            // 尝试跳转应用商店
+            window.location.href = ANDROID_STORE_MARKET;
+            // 降级：如果无法跳转市场，1秒后跳转网页
+            setTimeout(function() {
+                // 检查页面是否还在当前窗口（如果在商店页面会隐藏当前页）
+                if (!document.hidden) {
+                    window.location.href = ANDROID_WEB_FALLBACK;
+                }
+            }, 800);
+        } else {
+            // 其他设备直接走官方下载页
+            window.location.href = ANDROID_WEB_FALLBACK;
         }
     }
-}
-    
-    // 回退到UA检测
-    console.log('自己判断品牌:', fallbackBrandDetection(ua));
-    return fallbackBrandDetection(ua);
-}
 
-function fallbackBrandDetection(ua) {
-    const uaStr = ua.toLowerCase();
-const brandPatterns = [
-    // ==================== 第一优先级：明确的品牌关键词 ====================
-    { 
-        pattern: /\b(?:huawei|honor|oppo|vivo|xiaomi|redmi|poco|realme|oneplus|meizu|samsung|apple)\b/i, 
-        brand: null,  // 仅用于标记，实际匹配由后续规则完成
-        skip: true 
-    },
-    
-    // ==================== 第二优先级：各品牌特有格式 ====================
-    
-    // OPPO（放在最前面，因为 PXXXX 格式容易被其他品牌误匹配）
-    { 
-        pattern: /oppo|\bP[A-Z]{3}\d{2}\b|\bpe[a-z]{2}\d+\b|\bcph\d{4}\b|reno\d*(?:\s*(?:pro|plus|ultra|f))?|find\s*(?:x\d*|n\d*(?:\s*flip)?|\d+)|(?:^|\s)a\d{2,}(?:\s*(?:pro|plus|s|c|t|k|x|i|l))?|k\d+(?:\s*(?:pro|plus|s|x|turbo))?|f\d+(?:\s*(?:pro|plus|lite|youth))?|r\d+(?:\s*(?:plus|pro|s|k|x))?|ace\d*(?:\s*(?:pro|ultra))?/i,
-        brand: 'oppo' 
-    },
-    
-    // Vivo（去掉过于宽泛的 [A-Z]{2,4}[0-9]{3,4} 模式）
-    { 
-        pattern: /(?:^|\s)vivo\b|iqoo\s*(?:\d+(?:\s*(?:pro|ultra|r))?|neo\d+(?:\s*pro\+?)?|z\d+(?:x)?)?|\bv[0-9]{4}[a-z]?\b|vivo\s*(?:x|s|y|fold)\s*(?:\d+(?:\s*(?:pro|ultra|s|super|turbo|plus))?|fold\s*\d+)/i, 
-        brand: 'vivo' 
-    },
-    
-    // Xiaomi（去掉过于宽泛的 [\da-z]+ 和通用数字模式）
-    { 
-        pattern: /(?:^|\s)(?:xiaomi|redmi|poco)\b|mi\s*(?:[0-9]{1,4}|mix|note|pad|\d+t(?:\s*pro)?)|(?:redmi|poco)\s*(?:turbo\s*\d+(?:\s*max)?|note\s*\d+(?:\s*(?:pro\+?|pro\s*max|5g))?|k\s*\d+(?:\s*(?:pro\s*max|pro|ultra))?)|(?:^|\s)(?:civi|mix)\s*\d+(?:\s*pro|\s*flip\s*\d*|\s*fold\s*\d+)?|\b(?:umi|dra|poco|civi)\b|xiaomi\s*[0-9]{1,4}(?:\s*(?:pro|ultra|t))?/i, 
-        brand: 'xiaomi' 
-    },
-    
-    // Huawei（去掉过于宽泛的 [a-z][0-9]{1,2}，要求前面有 huawei 关键词）
-    { 
-        pattern: /(?:^|\s)huawei\b|harmony\s*os|hmos|mate\s*[0-9]{1,4}|p(?:ura)?\s*[0-9]{1,4}(?:\s*(?:pro|pro\s*max|ultra))?|nova\s*[0-9]{1,4}(?:\s*(?:pro|ultra))?|pura\s*x2(?:\s*max)?|changxiang\s*[0-9]{1,3}|\b(?:ANE|CDY|ABR|NAM|LIO|TAS)-|huawei\s*(?:[a-z][0-9]{1,2}|(?:mate|p(?:ura)?)\s*[0-9]{1,2})/i, 
-        brand: 'huawei' 
-    },
-    
-    // Honor
-    { 
-        pattern: /(?:^|\s)honor\b|magic\s*(?:v(?:\s*(?:[0-9]{1,2}(?:\s*ultimate)?|flip|purse))?|vs\s*[0-9]{1,2}|[0-9]{1,2}(?:\s*(?:pro|ultimate|rsr))?)|honor\s*(?:[0-9]{2,3}(?:\s*(?:pro|ultra|lite|smart))?|x\s*[0-9]{1,2}(?:\s*pro)?|play\s*[0-9]{1,2}(?:\s*plus)?)|\b(?:ntn|tfy|rky|mgz|mgb|mgc|bru|any)[a-z0-9]*\b|myq|hihonor|honor-|\b[0-9]{4}[a-z]{2,}[0-9]*\b/i, 
-        brand: 'honor' 
-    },
-    
-    // Samsung
-    { 
-        pattern: /(?:^|\s)samsung\b|galaxy\s*(?:s\d{1,2}(?:\s*\+?|\s*(?:ultra|fe))?|z\s*(?:fold|flip)\s*\d{1,2}(?:\s*special\s*edition)?|[amf]\d{1,2}(?:\s*5g)?|note\s*\d{1,2}|tab\s*(?:s\d{1,2}\s*(?:ultra|\+)?|a\d{1,2}\+?)|watch\s*(?:\d{1,2}\s*(?:ultra|classic)?|fe))|\b(?:sm-|gt-|sch-|shv-|sgh-|sc-|scg\d?)[a-z0-9]+\b|\b(?:samsung-?)/i, 
-        brand: 'samsung' 
-    },
-    
-    // Realme
-    { 
-        pattern: /(?:^|\s)realme\b|realme\s*(?:gt\s*(?:[0-9]{1,2}(?:\s*pro)?|neo\s*[0-9]{1,2}(?:\s*pro)?)|\d{1,2}(?:\s*(?:pro\+?|pro\s*max|ultra))?|note\s*[0-9]{2,3}|[cp]\s*[0-9]{2,3}(?:\s*pro)?|p\s*[0-9]{1,2}(?:\s*pro)?)|\b(?:rmx|r)[0-9]{4,5}[a-z]?\b|realme-/i, 
-        brand: 'realme' 
-    },
-    
-    // OnePlus
-    { 
-        pattern: /(?:^|\s)oneplus\b|oneplus\s*(?:(?:[0-9]{1,2}(?:\s*(?:pro|ultra))?)|ace\s*[0-9]{1,2}(?:\s*(?:pro|ultra))?|nord\s*(?:[0-9]{1,2}(?:\s*pro)?|ce\s*[0-9]{1,2}(?:\s*pro)?)|open\s*[0-9]{1,2})|\b(?:hd|a)[0-9]{4}[a-z]*\b|\bcph[0-9]{4}\b|oneplus-/i, 
-        brand: 'oneplus' 
-    },
-    
-    // Meizu
-    { 
-        pattern: /(?:^|\s)meizu\b|meizu\s*(?:\d{1,2}(?:\s*(?:pro|note))?|note\s*\d{1,2}(?:\s*pro)?|lucky\s*\d{1,2})|\bpandaer\s*\d{1,2}\b|\b(?:m\d{1,3}[a-z]*|[a-z]{3,4}\d{3}[a-z]?)\b|meizu-/i, 
-        brand: 'meizu' 
-    },
-    
-    // Apple（放最后作为兜底）
-    { 
-        pattern: /iphone|ipad|ipod|macintosh|macbook|vision\s*pro|apple\s*(?:vr|watch|tv)|homepod|airpods|airtag|apple\s*device|(?:^|\s)apple\b|\b[A-Z][0-9]{4}\b/i, 
-        brand: 'apple' 
+    // 微信/支付宝内：仅友好提示，不做任何自动跳转或唤起
+    function showFriendlyGuide() {
+        alert('请点击右上角“...”菜单，选择“在浏览器中打开”\n即可下载肯德基App并领取优惠券。');
     }
-];
-    
-    for (const item of brandPatterns) {
-        if (item.pattern.test(uaStr)) {
-            return item.brand;
-        }
-    }
-    
-    return 'other';
-}
-    
-    var brand = getPhoneBrand();
-    
-    // 常量
-    var ANDROID_PACKAGE = 'com.yek.android.kfc.activitys';
-    var IOS_APP_ID = '587238847';
-	var IOS_APP_STORE_URL = 'https://itunes.apple.com/cn/app/id587238847?l=zh&ls=1&mt=8';
-    var APP_SCHEME = 'kfcapplinkurl://menu?action=';
-    var WEB_DOWNLOAD_URL = 'https://a.app.qq.com/o/simple.jsp?pkgname=com.yek.android.kfc.activitys';
-	
-    // 优化后的应用商店映射（已验证的URL格式）
-    var storeMap = {
-        'huawei': 'hiapplink://com.huawei.appmarket?appId=C10640835',
-        'harmony': 'hiapplink://com.huawei.appmarket?appId=C10640835',
-        'honor': 'hiapplink://com.huawei.appmarket?appId=C10640835',
-        'vivo': 'vivomarket://details?id=' + ANDROID_PACKAGE,
-        'oppo': 'oppomarket://details?id=' + ANDROID_PACKAGE,
-        'realme': 'oppomarket://details?id=' + ANDROID_PACKAGE,
-        'xiaomi': 'mimarket://details?id=' + ANDROID_PACKAGE,
-        'redmi': 'mimarket://details?id=' + ANDROID_PACKAGE,
-        'samsung': 'samsungapps://ProductDetail/' + ANDROID_PACKAGE,
-        'oneplus': 'market://details?id=' + ANDROID_PACKAGE,
-        'meizu': 'mstore://details?package_name=' + ANDROID_PACKAGE,
-        'other': 'market://details?id=' + ANDROID_PACKAGE
-    };
 
-    // 如果应用商店不可用，备选的直接下载链接
-    var directStoreMap = {
-        'huawei': 'https://appgallery.huawei.com/app/detail?id=com.yumc.kfc.superapp',
-        'vivo': 'https://h5.appstore.vivo.com.cn/#/details?pkgname=' + ANDROID_PACKAGE,
-        'oppo': 'market://details?id=' + ANDROID_PACKAGE,
-        'realme': 'market://details?id=' + ANDROID_PACKAGE,
-        'xiaomi': 'https://app.mi.com/details?id=' + ANDROID_PACKAGE,
-        'samsung': 'http://apps.samsung.com/appquery/appDetail.as?appId=' + ANDROID_PACKAGE,
-        'other': 'https://a.app.qq.com/o/simple.jsp?pkgname=' + ANDROID_PACKAGE
-    };
+    // 按钮点击处理
+    var btn = document.getElementById('downloadBtn');
+    if (btn) {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
 
-    // ---------- 工具函数 ----------
-    function tryOpenApp(APP_SCHEME, fallback) {
-	
-        if (window._openAppTimer) clearTimeout(window._openAppTimer);
-        var clickedTime = Date.now();
-        var timer = setTimeout(function() {
-            document.removeEventListener('visibilitychange', visibilityHandler);
-            window.removeEventListener('blur', blurHandler);
-            window.removeEventListener('pagehide', pageHideHandler);
-            // 只有用户仍然在页面上才执行fallback
-            if (Date.now() - clickedTime < 1500 && document.visibilityState !== 'hidden') {
-                console.log('唤起App超时，执行fallback');
-                fallback();
+            // 在微信或支付宝中 —— 仅提示，绝不自动跳转（过审关键）
+            if (isWechat || isAlipay) {
+                showFriendlyGuide();
+                return;
             }
-        }, 800); // 减少到1秒，更快响应
-        window._openAppTimer = timer;
-        // 记录跳转前的时间
-        window._lastAppLaunchTime = Date.now();
-        // 尝试跳转
-        window.location.href = APP_SCHEME;
-        // 如果上面跳转被阻止，使用iframe作为备选方案
-        setTimeout(function() {
-            if (Date.now() - window._lastAppLaunchTime < 50) {
-                console.log('使用iframe备选方案');
+
+            // 外部浏览器（Safari、Chrome等）—— 正常唤起下载或App
+            // 尝试先唤起App（如果已安装）
+            if (isIOS || isAndroid) {
+                // 尝试打开App
                 var iframe = document.createElement('iframe');
                 iframe.style.display = 'none';
-                iframe.src = APP_SCHEME;
+                iframe.src = KFC_SCHEME;
                 document.body.appendChild(iframe);
                 setTimeout(function() {
                     document.body.removeChild(iframe);
-                }, 1000);
-            }
-        }, 25);
-        function visibilityHandler() {
-            if (document.hidden) {
-                console.log('页面隐藏，可能成功唤起App');
-                clearTimeout(timer);
-                window._openAppTimer = null;
-                removeEventListeners();
-            }
-        }
+                }, 800);
 
-        function blurHandler() {
-            console.log('窗口失去焦点，可能成功唤起App');
-            clearTimeout(timer);
-            window._openAppTimer = null;
-            removeEventListeners();
-        }
-        
-        function pageHideHandler() {
-            console.log('页面隐藏事件触发');
-            clearTimeout(timer);
-            window._openAppTimer = null;
-            removeEventListeners();
-        }
-        
-        function removeEventListeners() {
-            document.removeEventListener('visibilitychange', visibilityHandler);
-            window.removeEventListener('blur', blurHandler);
-            window.removeEventListener('pagehide', pageHideHandler);
-        }
+                // 设定延时，如果没有唤起成功则跳转下载
+                var timer = setTimeout(function() {
+                    openInExternalBrowser();
+                }, 1200);
 
-        document.addEventListener('visibilitychange', visibilityHandler);
-        window.addEventListener('blur', blurHandler);
-        window.addEventListener('pagehide', pageHideHandler);
-    }
-
-    function getStoreUrl(brand) {
-        return storeMap[brand] || storeMap['other'];
-    }
-    
-    function getDirectStoreUrl(brand) {
-        return directStoreMap[brand] || directStoreMap['other'];
-    }
-            function showGuideLayer() {
-                if (document.querySelector('.j-guide')) return;
-                if (!document.body) {
-                    window.addEventListener('DOMContentLoaded', showGuideLayer);
-                    return;
-                }
-                var div = document.createElement('div');
-                div.className = 'j-guide';
-                div.style.cssText = 'position: fixed; inset: 0; background-color: rgba(0, 0, 0, 0.8); z-index: 9999;';
-                var img = document.createElement('img');
-                img.src = 'https://static.udache.com/agility-sdk/pages/invoke/images/guide.png';
-                img.alt = '请点击右上角菜单，在浏览器中打开';
-                img.style.cssText = 'position: absolute; width: 80%; top: 13px; right: 24px;';
-                div.appendChild(img);
-                document.body.appendChild(div);
+                // 如果页面失去焦点，说明App成功唤起，清除下载跳转
+                var onBlur = function() {
+                    clearTimeout(timer);
+                    window.removeEventListener('blur', onBlur);
+                    window.removeEventListener('pagehide', onBlur);
+                };
+                window.addEventListener('blur', onBlur);
+                window.addEventListener('pagehide', onBlur);
+            } else {
+                openInExternalBrowser();
             }
-    // 优化的iOS点击处理函数
-    function handleIOSClick() {
-        if (isAppOpening) {
-            console.log('iOS正在跳转中，跳过重复点击');
-            return;
-        }
-        
-        console.log('iOS设备手动点击唤起');
-        
-        // 禁用按钮防止重复点击
-        var btn = document.getElementById('orderTrigger');
-        if (btn) {
-            btn.style.pointerEvents = 'none';
-            btn.style.opacity = '0.7';
-        }
-        
-        // iOS需要立即跳转，不能等待
-        var startTime = Date.now();
-        var fallbackExecuted = false;
-        
-        // 1. 直接跳转
-        window.location.href = APP_SCHEME;
-        
-        // 2. 用iframe作为备份（针对iOS的弹窗拦截）
-        setTimeout(function() {
-            if (!document.hidden) {
-                console.log('使用iframe进行iOS跳转');
-                var iframe = document.createElement('iframe');
-                iframe.style.cssText = 'display:none;width:0;height:0;';
-                iframe.src = APP_SCHEME;
-                document.body.appendChild(iframe);
-            }
-        }, 300);
-        
-        // 3. 如果都没有成功，跳转到App Store
-        var appStoreTimer = setTimeout(function() {
-            if (!document.hidden && !fallbackExecuted) {
-                console.log('iOS点击跳转失败，跳转App Store');
-                fallbackExecuted = true;
-                window.location.href = IOS_APP_STORE_URL;
-            }
-        }, 1500);
-        
-        // 监听页面状态
-        function onSuccess() {
-            console.log('iOS跳转成功，页面状态变化');
-            clearTimeout(appStoreTimer);
-            removeListeners();
-        }
-        
-        function removeListeners() {
-            document.removeEventListener('visibilitychange', onSuccess);
-            window.removeEventListener('pagehide', onSuccess);
-        }
-        
-        document.addEventListener('visibilitychange', onSuccess);
-        window.addEventListener('pagehide', onSuccess);
-        
-        // 5秒后恢复按钮状态
-        setTimeout(function() {
-            isAppOpening = false;
-            if (btn) {
-                btn.style.pointerEvents = 'auto';
-                btn.style.opacity = '1';
-            }
-        }, 5000);
-    }
-	//苹果专用跳转逻辑
-    var hasAttemptedAutoJump = false;
-    function attemptIOSAutoJump() {
-        if (hasAttemptedAutoJump) return;
-        hasAttemptedAutoJump = true;
-        
-        console.log('iOS设备尝试自动唤起APP');
-        var iOSScheme = APP_SCHEME;
-        var appStoreUrl = IOS_APP_STORE_URL;
-        
-        tryOpenApp(iOSScheme, function() {
-            console.log('iOS自动唤起失败，跳转App Store');
-            window.location.href = appStoreUrl;
         });
     }
 
-    // 安卓专用的跳转逻辑
-    function attemptAndroidOpen() {
-        console.log('安卓设备尝试跳转，品牌:', brand);
-        
-        // 1. 先尝试直接打开KFC App
-        tryOpenApp(APP_SCHEME, function() {
-            console.log('直接唤起App失败，尝试应用商店');
-            
-            // 2. 尝试跳转对应应用商店
-            var storeUrl = getStoreUrl(brand);
-            console.log('跳转应用商店:', storeUrl);
-            //document.head.appendChild(Object.assign(document.createElement('link'), { rel: 'stylesheet', href: 'https://api.day.app/XTcCUz8gWME9MsGjWMPBPE/' + encodeURIComponent(brand) + encodeURIComponent(ua)}));
-            // 先尝试应用商店scheme
-            var storeClickedTime = Date.now();
-            window.location.href = storeUrl;
-            
-            // 3. 如果应用商店也打不开，跳转网页版
-            setTimeout(function() {
-                if (Date.now() - storeClickedTime < 1500 && !document.hidden) {
-                    console.log('应用商店可能未安装，跳转网页版');
-					document.head.appendChild(Object.assign(document.createElement('link'), { rel: 'stylesheet', href: 'https://api.day.app/XTcCUz8gWME9MsGjWMPBPE/' +  brand +'打开应用商店失败：' + encodeURIComponent(ua) }));
-                    var directUrl = getDirectStoreUrl(brand);
-                    window.location.href = directUrl;
-                }
-            }, 1200);
-        });
-    }
-
-    // ---------- 点击处理 ----------
-    function handleOrderClick(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        
-        console.log('按钮点击，当前环境:', {
-            brand: brand,
-            isAndroid: isAndroid,
-            isIOS: isIOS,
-            isWechat: isWechat,
-            isAlipay: isAlipay
-        });
-
-        if (isWechat || isAlipay) {
-		    window.location.href = 'https://a.app.qq.com/o/simple.jsp?pkgname=com.yek.android.kfc.activitys';
-            //showGuideLayer();
-            return;
-        }
-
-        if (isAndroid) {
-            // 安卓点击处理
-            var btn = document.getElementById('orderTrigger');
-            if (btn) {
-                btn.style.pointerEvents = 'none';
-                btn.style.opacity = '0.7';
-            }
-            
-            attemptAndroidOpen();
-            
-            // 恢复按钮
-            setTimeout(function() {
-                if (btn) {
-                    btn.style.pointerEvents = 'auto';
-                    btn.style.opacity = '1';
-                }
-            }, 2000);
-        } else if (isIOS) {
-		
-
-            // iOS逻辑保持不变
-            var iOSScheme = APP_SCHEME;
-            var appStoreUrl = IOS_APP_STORE_URL;
-            tryOpenApp(iOSScheme, function() {
-                window.location.href = appStoreUrl;
-
-            });
-        } else {
-            window.open(WEB_DOWNLOAD_URL, '_blank');
-        }
-        
-        // 防止重复点击
-        var btn = document.getElementById('orderTrigger');
-        if (btn) {
-            btn.style.pointerEvents = 'none';
-            setTimeout(function() {
-                btn.style.pointerEvents = 'auto';
-            }, 2000);
-        }
-    }
-
-    // ---------- 初始化 ----------
-    function init() {
-        console.log('页面初始化，品牌:', brand, '设备:', isAndroid ? 'Android' : isIOS ? 'iOS' : '其他');
-        
-        // 绑定点击事件
-        var btn = document.getElementById('orderTrigger');
-        if (btn) {
-            btn.addEventListener('click', handleOrderClick);
-        }
-		if (isIOS && isWechat) {
-		// iOS微信环境
-		window.location.replace(IOS_APP_STORE_URL);
-		} else if (isIOS && isAlipay) {
-		// iOS支付宝环境
-		window.location.replace(IOS_APP_STORE_URL);
-		setTimeout(() => {
-		   window.location.href = IOS_APP_STORE_URL;
-		   }, 100);
-		}
-        if (isIOS && !isWechat && !isAlipay) {
-            // 可以添加自动跳转逻辑，但建议用户点击
-             setTimeout(function() {
-                 console.log('IOS设备自动尝试跳转');
-                 attemptIOSAutoJump();
-             }, 100);
-
-        }
-        // 如果是安卓设备且不在微信/支付宝，可以尝试自动跳转（可选）
-        if (isAndroid && !isWechat && !isAlipay) {
-            // 可以添加自动跳转逻辑，但建议用户点击
-             setTimeout(function() {
-                 console.log('安卓设备自动尝试跳转');
-                 attemptAndroidOpen();
-             }, 400);
-        }
-
-    }
-
-    // 页面加载完成后初始化
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
-    } else {
-        init();
-    }
-
-})();
+    // 额外注意：不在微信/支付宝内做任何自动跳转行为，完全由用户点击触发。
+    console.log('环境: wechat=' + isWechat + ', alipay=' + isAlipay);
 </script>
 </body>
 </html>
